@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.example.demo.playlists.PlaylistMapper">
+	<insert id="insert" parameterType="java.util.HashMap">
+		INSERT INTO my_database.playlist
+		(
+			user_id,
+			title,
+			created_date
+		) VALUES (
+			#{userId},
+			#{title},
+			now()
+		)
+	</insert>
+	
+	<select id="selectPlaylists" 
+	 parameterType="me.example.demo.playlists.SearchPlaylist" 
+	 resultType="me.example.demo.playlists.PlaylistResultDto">
+		SELECT id as playlist_id, title, date_format(created_date, '%Y%m%d%H%i%s') as created_date 
+		  FROM my_database.playlist
+		 WHERE user_id = #{userId}
+		 ORDER BY id DESC
+		 LIMIT #{page}, #{perPage}
+	</select>
+	
+	<select id="selectPlaylist" 
+	 parameterType="integer" 
+	 resultType="me.example.demo.playlists.Playlist">
+		SELECT id as playlist_id, title, date_format(created_date, '%Y%m%d%H%i%s') as created_date 
+		  FROM my_database.playlist 
+		 WHERE user_id = #{user_id} 
+		   AND id = #{playlist_id}
+	</select>
+	
+	<delete id="deletePlaylist"
+	 parameterType="integer">
+		DELETE FROM my_database.playlist 
+		 WHERE user_id = #{user_id} 
+		   AND id = #{playlist_id}
+	</delete>
+	
+</mapper>
