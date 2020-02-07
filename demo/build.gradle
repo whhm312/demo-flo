@@ -22,8 +22,7 @@ dependencies {
     compile('mysql:mysql-connector-java')
 	compileOnly 'org.projectlombok:lombok:1.18.10'
 	annotationProcessor 'org.projectlombok:lombok:1.18.10'
-	compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.6'
-	
+    compile('org.modelmapper:modelmapper:2.3.6')
 }
 
 flyway {
