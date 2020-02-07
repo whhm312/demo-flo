@@ -14,4 +14,6 @@ public interface PlaylistMapper {
 	Playlist selectPlaylist(@Param("user_id") Integer userId, @Param("playlist_id") Integer playlistId);
 
 	int deletePlaylist(@Param("user_id") Integer userId, @Param("playlist_id") Integer playlistId);
+
+	int insertPlaylistContent(PlaylistContent playlistContent);
 }

@@ -3,7 +3,7 @@
 
 <mapper namespace="me.example.demo.playlists.PlaylistMapper">
 	<insert id="insert" parameterType="java.util.HashMap">
-		INSERT INTO my_database.playlist
+		INSERT INTO playlists
 		(
 			user_id,
 			title,
@@ -15,11 +15,27 @@
 		)
 	</insert>
 	
+	<insert id="insertPlaylistContent"
+	  parameterType="me.example.demo.playlists.PlaylistContent">
+		INSERT INTO playlist_details
+		(
+			playlist_id,
+			album_id,
+			song_id,
+			register_date
+		) VALUES (
+			#{playlistId},
+			#{albumId},
+			#{songId},
+			now()
+		)
+	</insert>
+	
 	<select id="selectPlaylists" 
 	 parameterType="me.example.demo.playlists.SearchPlaylist" 
 	 resultType="me.example.demo.playlists.PlaylistResultDto">
 		SELECT id as playlist_id, title, date_format(created_date, '%Y%m%d%H%i%s') as created_date 
-		  FROM my_database.playlist
+		  FROM playlists
 		 WHERE user_id = #{userId}
 		 ORDER BY id DESC
 		 LIMIT #{page}, #{perPage}
@@ -29,14 +45,14 @@
 	 parameterType="integer" 
 	 resultType="me.example.demo.playlists.Playlist">
 		SELECT id as playlist_id, title, date_format(created_date, '%Y%m%d%H%i%s') as created_date 
-		  FROM my_database.playlist 
+		  FROM playlists 
 		 WHERE user_id = #{user_id} 
 		   AND id = #{playlist_id}
 	</select>
 	
 	<delete id="deletePlaylist"
 	 parameterType="integer">
-		DELETE FROM my_database.playlist 
+		DELETE FROM playlists 
 		 WHERE user_id = #{user_id} 
 		   AND id = #{playlist_id}
 	</delete>

@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.NameTokenizers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -50,14 +51,25 @@ public class PlaylistContoller {
 	}
 
 	@PostMapping("/api/playlists/{playlist_id}")
-	public ResponseEntity<Object> addContent(@RequestHeader(name = "user_id") Integer userId,
-			@PathVariable("playlist_id") Integer playlistId, @RequestBody PlaylistContent content, Errors errors) {
+	public ResponseEntity<Object> addContents(@RequestHeader(name = "user_id") Integer userId,
+			@PathVariable("playlist_id") Integer playlistId, @RequestBody PlaylistContentsDto playlistContentsDto) {
 		boolean isNotOwner = playlistService.isNotOwner(userId, playlistId);
 		if (isNotOwner) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok().build();
+		modelMapper.getConfiguration().setSourceNameTokenizer(NameTokenizers.UNDERSCORE)
+				.setDestinationNameTokenizer(NameTokenizers.UNDERSCORE);
+		PlaylistContents playlistContents = modelMapper.map(playlistContentsDto, PlaylistContents.class);
+		playlistContents.setUserId(userId);
+		playlistContents.setPlaylistId(playlistId);
+
+		int addContentsCount = playlistService.addConents(playlistContents);
+		if (addContentsCount > 0) {
+			return ResponseEntity.ok().build();
+		} else {
+			return ResponseEntity.noContent().build();
+		}
 	}
 
 	@GetMapping("/api/playlists")

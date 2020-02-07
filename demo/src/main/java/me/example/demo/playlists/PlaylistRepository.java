@@ -17,16 +17,19 @@ public class PlaylistRepository {
 		return playlistMapper.insert(playlist) > 0;
 	}
 
-	public List<PlaylistResultDto> getPlaylists(SearchPlaylist searchPlaylist) {
-		return playlistMapper.selectPlaylists(searchPlaylist);
+	public int addConent(PlaylistContent playlistContent) {
+		return playlistMapper.insertPlaylistContent(playlistContent);
 	}
 
-	public Playlist getPlaylist(Integer userId, Integer playlistId) {
-		return playlistMapper.selectPlaylist(userId, playlistId);
+	public List<PlaylistResultDto> getPlaylists(SearchPlaylist searchPlaylist) {
+		return playlistMapper.selectPlaylists(searchPlaylist);
 	}
 
 	public int removePlaylist(Integer userId, Integer playlistId) {
 		return playlistMapper.deletePlaylist(userId, playlistId);
 	}
 
+	public Playlist getPlaylist(Integer userId, Integer playlistId) {
+		return playlistMapper.selectPlaylist(userId, playlistId);
+	}
 }
