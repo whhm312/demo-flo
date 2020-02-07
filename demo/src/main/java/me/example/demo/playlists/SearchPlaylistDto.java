@@ -1,6 +1,8 @@
 package me.example.demo.playlists;
 
-import lombok.AccessLevel;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,13 +14,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SearchPlaylist {
-	Integer userId;
-	@Getter(AccessLevel.NONE)
+public class SearchPlaylistDto {
+	@Min(1)
 	Integer page;
-	Integer perPage;
-
-	public Integer getPage() {
-		return page - 1;
-	}
+	@Min(1)
+	@Max(50)
+	Integer per_page;
 }
