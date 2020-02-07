@@ -29,6 +29,10 @@ public class PlaylistRepository {
 		return playlistMapper.deletePlaylist(userId, playlistId);
 	}
 
+	public int removePlaylistContents(Integer playlistId) {
+		return playlistMapper.deletePlaylistContents(playlistId);
+	}
+
 	public Playlist getPlaylist(Integer userId, Integer playlistId) {
 		return playlistMapper.selectPlaylist(userId, playlistId);
 	}

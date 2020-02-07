@@ -57,4 +57,10 @@
 		   AND id = #{playlist_id}
 	</delete>
 	
+	<delete id="deletePlaylistContents"
+	 parameterType="integer">
+		DELETE FROM playlist_details 
+		 WHERE playlist_id = #{playlist_id}
+	</delete>
+	
 </mapper>

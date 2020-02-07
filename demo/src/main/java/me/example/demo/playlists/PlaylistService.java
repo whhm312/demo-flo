@@ -3,6 +3,7 @@ package me.example.demo.playlists;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -48,8 +49,11 @@ public class PlaylistService {
 		return playlistRepository.getPlaylists(searchPlaylist);
 	}
 
+	@Transactional
 	public int removePlaylist(Integer userId, Integer playlistId) {
-		return playlistRepository.removePlaylist(userId, playlistId);
+		int removePlaylist = playlistRepository.removePlaylist(userId, playlistId);
+		playlistRepository.removePlaylistContents(playlistId);
+		return removePlaylist;
 	}
 
 	public boolean isNotOwner(Integer userId, Integer playlistId) {
