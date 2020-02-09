@@ -8,11 +8,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.NameTokenizers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,15 +27,15 @@ public class PlaylistContoller {
 		this.modelMapper = modelMapper;
 	}
 
-	@PostMapping("/api/playlists")
+	@PostMapping("/playlists")
 	public ResponseEntity<Object> createPlaylist(@RequestHeader(name = "user_id") Integer userId,
-			@RequestBody @Valid PlaylistDto playlistDto, Errors errors) {
+			@RequestBody @Valid PlaylistParams playlistParams, Errors errors) {
 		if (errors.hasErrors()) {
 			return ResponseEntity.badRequest().body(errors);
 		}
 
-		Playlist playlist = modelMapper.map(playlistDto, Playlist.class);
-		playlist.setUserId(StringUtils.isEmpty(userId) ? 1 : userId);
+		Playlist playlist = modelMapper.map(playlistParams, Playlist.class);
+		playlist.setUserId(userId);
 
 		boolean isSuccessed = playlistService.createPlaylist(playlist);
 		if (isSuccessed) {
@@ -47,17 +45,19 @@ public class PlaylistContoller {
 		}
 	}
 
-	@PostMapping("/api/playlists/{playlist_id}")
+	@PostMapping("/playlists/{playlist_id}")
 	public ResponseEntity<Object> addContents(@RequestHeader(name = "user_id") Integer userId,
-			@PathVariable("playlist_id") Integer playlistId, @RequestBody PlaylistContentsDto playlistContentsDto) {
+			@PathVariable("playlist_id") Integer playlistId,
+			@RequestBody PlaylistContentsParams playlistContentsParams) {
+		boolean isEmptyContent = playlistService.isEmptyContent(playlistContentsParams);
 		boolean isNotOwner = playlistService.isNotOwner(userId, playlistId);
-		if (isNotOwner) {
-			return ResponseEntity.notFound().build();
+		if (isNotOwner || isEmptyContent) {
+			return ResponseEntity.noContent().build();
 		}
 
 		modelMapper.getConfiguration().setSourceNameTokenizer(NameTokenizers.UNDERSCORE)
 				.setDestinationNameTokenizer(NameTokenizers.UNDERSCORE);
-		PlaylistContents playlistContents = modelMapper.map(playlistContentsDto, PlaylistContents.class);
+		PlaylistContents playlistContents = modelMapper.map(playlistContentsParams, PlaylistContents.class);
 		playlistContents.setUserId(userId);
 		playlistContents.setPlaylistId(playlistId);
 
@@ -69,29 +69,18 @@ public class PlaylistContoller {
 		}
 	}
 
-	@GetMapping("/api/playlists")
-	public ResponseEntity<Object> getPlaylists(@RequestHeader(name = "user_id") Integer userId,
-			@ModelAttribute @Valid SearchPlaylistDto searchPlaylistDto, Errors errors) {
-		if (errors.hasErrors()) {
-			return ResponseEntity.badRequest().body(errors);
-		}
-
-		modelMapper.getConfiguration().setSourceNameTokenizer(NameTokenizers.UNDERSCORE)
-				.setDestinationNameTokenizer(NameTokenizers.UNDERSCORE);
-		SearchPlaylist searchPlaylist = modelMapper.map(searchPlaylistDto, SearchPlaylist.class);
-		searchPlaylist.setUserId(userId);
-
-		List<PlaylistResultDto> playlists = playlistService.getPlaylists(searchPlaylist);
+	@GetMapping("/playlists")
+	public ResponseEntity<Object> getPlaylists(@RequestHeader(name = "user_id") Integer userId) {
+		List<PlaylistsResult> playlists = playlistService.getPlaylists(new SearchPlaylist(userId));
 		return ResponseEntity.status(HttpStatus.OK).body(playlists);
 	}
 
-	@DeleteMapping("/api/playlists/{playlist_id}")
+	@DeleteMapping("/playlists/{playlist_id}")
 	public ResponseEntity<Object> removePlaylist(@RequestHeader(name = "user_id") Integer userId,
 			@PathVariable("playlist_id") Integer playlistId) {
-
 		boolean isNotOwner = playlistService.isNotOwner(userId, playlistId);
 		if (isNotOwner) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.noContent().build();
 		}
 
 		int removedPlaylistCount = playlistService.removePlaylist(userId, playlistId);

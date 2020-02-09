@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 public interface PlaylistMapper {
 	int insert(Playlist playlist);
 
-	List<PlaylistResultDto> selectPlaylists(SearchPlaylist searchPlaylist);
+	List<PlaylistsResult> selectPlaylists(SearchPlaylist searchPlaylist);
 
 	Playlist selectPlaylist(@Param("user_id") Integer userId, @Param("playlist_id") Integer playlistId);
 

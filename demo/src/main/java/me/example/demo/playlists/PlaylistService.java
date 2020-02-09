@@ -45,7 +45,7 @@ public class PlaylistService {
 		return result;
 	}
 
-	public List<PlaylistResultDto> getPlaylists(SearchPlaylist searchPlaylist) {
+	public List<PlaylistsResult> getPlaylists(SearchPlaylist searchPlaylist) {
 		return playlistRepository.getPlaylists(searchPlaylist);
 	}
 
@@ -63,5 +63,9 @@ public class PlaylistService {
 	public boolean isOwner(Integer userId, Integer playlistId) {
 		Playlist playlist = playlistRepository.getPlaylist(userId, playlistId);
 		return playlist != null && !StringUtils.isEmpty(playlist.getTitle());
+	}
+
+	public boolean isEmptyContent(PlaylistContentsParams playlistContentsParams) {
+		return playlistContentsParams.getAlbum_ids() == null && playlistContentsParams.getSong_ids() == null;
 	}
 }

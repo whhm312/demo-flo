@@ -1,5 +1,7 @@
 package me.example.demo.playlists;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SearchPlaylist {
-	Integer userId;
+public class PlaylistContentsParams {
+	private List<Integer> song_ids;
+	private List<Integer> album_ids;
 }

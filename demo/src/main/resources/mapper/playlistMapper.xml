@@ -33,16 +33,14 @@
 	
 	<select id="selectPlaylists" 
 	 parameterType="me.example.demo.playlists.SearchPlaylist" 
-	 resultType="me.example.demo.playlists.PlaylistResultDto">
+	 resultType="me.example.demo.playlists.PlaylistsResult">
 		SELECT id as playlist_id, title, date_format(created_date, '%Y%m%d%H%i%s') as created_date 
 		  FROM playlists
 		 WHERE user_id = #{userId}
 		 ORDER BY id DESC
-		 LIMIT #{page}, #{perPage}
 	</select>
 	
 	<select id="selectPlaylist" 
-	 parameterType="integer" 
 	 resultType="me.example.demo.playlists.Playlist">
 		SELECT id as playlist_id, title, date_format(created_date, '%Y%m%d%H%i%s') as created_date 
 		  FROM playlists 

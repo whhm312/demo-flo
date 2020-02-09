@@ -1,5 +1,5 @@
 --
--- V2: Create Playlists TABLE
+-- V1: Create Playlists TABLE
 --
 --
 CREATE TABLE playlists (

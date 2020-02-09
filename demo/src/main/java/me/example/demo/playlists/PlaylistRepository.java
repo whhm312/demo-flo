@@ -21,7 +21,7 @@ public class PlaylistRepository {
 		return playlistMapper.insertPlaylistContent(playlistContent);
 	}
 
-	public List<PlaylistResultDto> getPlaylists(SearchPlaylist searchPlaylist) {
+	public List<PlaylistsResult> getPlaylists(SearchPlaylist searchPlaylist) {
 		return playlistMapper.selectPlaylists(searchPlaylist);
 	}
 
